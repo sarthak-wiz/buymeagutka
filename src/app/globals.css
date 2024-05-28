@@ -2,3 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
+input[type="text"], textarea{
+    @apply block w-full border p-2 rounded-lg;
+}
