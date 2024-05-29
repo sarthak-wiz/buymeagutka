@@ -1,6 +1,7 @@
 import {Schema, model, models} from 'mongoose';
 
 type ProfileInfo = {
+    email: string;
     username: string;
     displayName: string;
     bio: string;
@@ -9,6 +10,7 @@ type ProfileInfo = {
 }
 
 const profileInfoSchema = new Schema({
+    email: {type: String, unique: true, required: true},
     username: {type: String, unique:true, required: true},
     DisplayName: {type: String},
     bio: {type: String},
