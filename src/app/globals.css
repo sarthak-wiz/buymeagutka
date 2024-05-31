@@ -5,3 +5,6 @@
 input[type="text"], textarea{
     @apply block w-full border p-2 rounded-lg;
 }
+label.input-label{
+    @apply block mt-2 ml-1 text-xs uppercase font-semibold text-gray-500;
+}

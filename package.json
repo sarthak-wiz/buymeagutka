@@ -25,6 +25,7 @@
     "parse-full-name": "^1.2.6",
     "react": "^18",
     "react-dom": "^18",
+    "react-hot-toast": "^2.4.1",
     "tailwind": "^4.0.0",
     "uniqid": "^5.4.0"
   },

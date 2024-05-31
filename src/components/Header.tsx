@@ -14,7 +14,7 @@ export default function Header({session}:{session:Session|null}) {
     const {first:firstName} = parseFullName(name);
     return (
         <>
-        <header className="mb-16">
+        <header className="mb-4">
           <div className="flex justify-between max-w-2xl mx-auto px-4 py-4">
           <Link href={'/'} className="inline-flex gap-1 items-center">
             <FontAwesomeIcon className="h-8" icon={faMugHot} />

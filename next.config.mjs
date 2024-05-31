@@ -6,9 +6,14 @@ const nextConfig = {
                 protocol: 'https',
                 hostname: '*.googleusercontent.com',
                 port: '',
+            },
+            {
+                protocol: 'https',
+                hostname: 'sarthak-buymeagutka.s3.amazonaws.com',
             }
-        ]
-    }
+
+        ],
+    },
 };
 
 export default nextConfig;

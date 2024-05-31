@@ -1,4 +1,4 @@
-import { faUpload } from "@fortawesome/free-solid-svg-icons";
+import { faPencil, faUpload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { uploadToS3 } from "@/actions/uploadActions";
 import { ChangeEvent } from "react";
@@ -22,8 +22,8 @@ export default function UploadButton({
     return (
         <>
         <label className="bg-white shadow-sm shadow-black/30 p-2 cursor-pointer rounded-lg flex gap-1 items-center">
-            <FontAwesomeIcon icon={faUpload} />
-            <input className="hiden" type="file" onChange={ev => upload(ev)} />
+            <FontAwesomeIcon icon={faPencil} />
+            <input className="hidden" type="file" onChange={ev => upload(ev)} />
         </label>
         </>
     );

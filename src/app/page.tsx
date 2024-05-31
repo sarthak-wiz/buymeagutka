@@ -1,6 +1,6 @@
 export default function Home() {
   return (
-    <section className="max-w-lg mx-auto text-center">
+    <section className="max-w-lg mx-auto text-center mt-16">
       <h1 className="text-6xl font-bold">
         Fund your<br />
         creative work
