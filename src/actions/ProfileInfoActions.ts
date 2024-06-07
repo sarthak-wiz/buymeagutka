@@ -1,27 +1,44 @@
-'use server';
-import {authOptions} from "@/lib/authOptions";
-import {ProfileInfoModel} from "@/models/ProfileInfo";
-import mongoose from "mongoose";
-import {getServerSession} from "next-auth";
+import { MongoClient } from 'mongodb';
+import { NextApiRequest } from 'next';
 
-export async function saveProfile(formData: FormData) {
-  await mongoose.connect(process.env.MONGODB_URI as string);
+// Example MongoDB URI
+const uri = process.env.MONGODB_URI;
+const client = new MongoClient(uri as string);
 
-  const session = await getServerSession(authOptions);
-  if (!session) throw 'you need to be logged in';
-  const email = session.user?.email;
+export async function saveProfile(req: NextApiRequest) {
+  console.log("Connecting to client...");
+  await client.connect();
+  console.log("Connected to client, accessing database...");
+  const database = client.db("test");
+  const profiles = database.collection("profileinfos");
 
-  const {
-    username, displayName, bio, coverUrl, avatarUrl,
-  } = Object.fromEntries(formData);
+  // Extract data from request body
+  const { username, displayName, bio, email, coverUrl, avatarUrl, upiId } = req.body;
+  console.log("Received data:", req.body);
 
-  const profileInfoDoc = await ProfileInfoModel.findOne({email});
-  if (profileInfoDoc) {
-    profileInfoDoc.set({username, displayName, bio, coverUrl, avatarUrl});
-    await profileInfoDoc.save();
-  } else {
-    await ProfileInfoModel.create({username, displayName, bio, email, coverUrl, avatarUrl});
-  }
+  try {
+    console.log("Checking for existing profile...");
+    const existingProfile = await profiles.findOne({ email });
 
-  return true;
+    if (existingProfile) {
+      console.log("Existing profile found, updating...");
+      await profiles.updateOne({ email }, { $set: { username, displayName, bio, coverUrl, avatarUrl, upiId } });
+      console.log("Profile updated.");
+    } else {
+      console.log("No existing profile, creating new one...");
+      await profiles.insertOne({ username, displayName, bio, email, coverUrl, avatarUrl, upiId });
+      console.log("New profile created.");
+    }
+
+    
+  return { message: "Profile saved successfully!" };
+} catch (error) {
+  console.error("Error in saveProfile:", error);
+  throw new Error('Failed to save profile: ' + (error instanceof Error ? error.stack : 'An unknown error occurred'));
+} finally {
+  console.log("Closing client connection...");
+  await client.close();
+  console.log("Client connection closed.");
 }
+}
+
