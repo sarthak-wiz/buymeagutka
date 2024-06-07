@@ -1,30 +1,44 @@
 'use client';
-import {saveProfile} from "@/actions/ProfileInfoActions";
 import UploadButton from "@/components/UploadButton";
-import {ProfileInfo} from "@/models/ProfileInfo";
-import {faSave} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {signOut} from "next-auth/react";
 import Image from "next/image";
-import {useState} from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
+import { ProfileInfo } from "@/models/ProfileInfo";
+import {signOut} from "next-auth/react";
+
+
 
 type Props = {
-  profileInfo: ProfileInfo|null;
+  profileInfo: ProfileInfo | null;
 };
 
-export default function ProfileInfoForm({profileInfo}:Props) {
-
+export default function ProfileInfoForm({ profileInfo }: Props) {
   const [coverUrl, setCoverUrl] = useState(profileInfo?.coverUrl);
   const [avatarUrl, setAvatarUrl] = useState(profileInfo?.avatarUrl);
+  const [upiId, setUpiId] = useState(profileInfo?.upiId);
 
-  async function handleFormAction(formData: FormData) {
-    await saveProfile(formData);
-    toast.success('Profile saved!');
+  async function handleFormAction(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    formData.append('coverUrl', coverUrl || '');
+    formData.append('avatarUrl', avatarUrl || '');
+    formData.append('upiId', upiId || '');
+
+    // Use fetch to call an API route for saving the profile
+    const response = await fetch('/api/saveProfile', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (response.ok) {
+      toast.success('Profile saved!');
+    } else {
+      toast.error('Failed to save profile.');
+    }
   }
 
   return (
-    <form action={handleFormAction}>
+    <form onSubmit={handleFormAction}>
       <div className="relative border bg-gray-100 rounded-lg h-48 mb-4">
         <Image
           src={coverUrl || ''}
@@ -78,14 +92,25 @@ export default function ProfileInfoForm({profileInfo}:Props) {
           name="bio"
           placeholder="bio"></textarea>
       </div>
+      <div>
+        <label className="input-label" htmlFor="upiId">UPI ID:</label>
+        <input
+          type="text"
+          id="upiId"
+          name="upiId"
+          value={upiId || ''}
+          onChange={e => setUpiId(e.target.value)}
+          placeholder="Enter UPI ID"
+        />
+      </div>
       <div className="flex justify-between">
         <button className="mt-4 bg-yellow-300 px-4 py-2 rounded-lg flex gap-2 items-center">
-          <FontAwesomeIcon icon={faSave} />
           Save profile
         </button>
         <button
           className="mt-4 bg-gray-200 border border-gray-300 px-4 py-2 rounded-lg flex gap-2 items-center"
-          onClick={() => signOut()} type="button">
+          type="button"
+          onClick={() => signOut()}>
           Logout
         </button>
       </div>
